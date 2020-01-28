@@ -44,6 +44,7 @@ object primes {
       var isPrime = true
       var i = 0
       while (isPrime || i < result.length) {
+        logger.info(s"Result: ${result(i)}")
         if (result(i).contains("0")) {
           isPrime = false
         }
