@@ -28,7 +28,7 @@ int main() {
 
     readInput(fileName, 1024);
 
-    printf("%s opened\n", fileName);
+    //printf("%s opened\n", fileName);
     file = fopen(fileName, "r");
     if (!file) {
         printf("Failed to open 0\n");
