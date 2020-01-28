@@ -34,7 +34,7 @@ LIBFILES = build/lib/$(PLATFORM)$(ARCH)
 ifeq ($(OS),Windows_NT)
     target =
 else
-    target = calc
+    target = calc-target
 endif
 
 # MACRO DEFS
@@ -69,17 +69,13 @@ PARTA_SERVER_OBJ = $(patsubst %,$(OBJECTFILES)/%,$(_PARTA_SERVER_OBJ))
 $(OBJECTFILES)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-calc: calc-exec
+calc-target: calc
 
-calc-exec: $(PARTA_SERVER_OBJ)
+calc: $(PARTA_SERVER_OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 	cp $@ ${BINFILES}/$@
 
 # Helpers
-package:
-	make clean
-	tar --exclude ".idea*" -cvzf ${ASSIGNMENT}.tar.gz ./
-
 clean:
 	rm -rf build/ core.*
 	rm -f calc
