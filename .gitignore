@@ -4,3 +4,4 @@ calc
 .vscode
 project/target
 .env
+src/main/c/build

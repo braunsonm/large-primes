@@ -11,7 +11,7 @@ import scala.sys.process._
 object primes {
   def main(args: Array[String]): Unit = {
     val logger = Logger.getLogger("P2IRC-filter-benchmark")
-    if (args.length <= 2) {
+    if (args.length != 2) {
       println("Usage: [calc directory] [n]")
       sys.exit(1)
     }

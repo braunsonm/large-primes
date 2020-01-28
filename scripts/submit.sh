@@ -10,7 +10,7 @@ export JAVA_HOME=$JAVA_HOME
 sbt assembly
 make -C src/main/c
 
-hadoop fs -copyFromLocal src/main/c/calc $HDFS_DIRECTORY
+hadoop fs -copyFromLocal src/main/c/calc $HDFS_DIRECTORY/calc
 
 $SPARK_ROOT/bin/spark-submit \
   --master $SPARK_MASTER \
