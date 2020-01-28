@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
+#include <errno.h>
 
 // GNU Multiple Precision Arithmetic Library
 #include <gmp.h>
@@ -28,10 +29,11 @@ int main() {
 
     readInput(fileName, 1024);
 
-    //printf("%s opened\n", fileName);
+    // printf("%s opened\n", fileName);
     file = fopen(fileName, "r");
     if (!file) {
         printf("Failed to open 0\n");
+        perror("File Open");
         return 1;
     }
 

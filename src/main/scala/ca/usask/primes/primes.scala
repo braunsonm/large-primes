@@ -13,7 +13,7 @@ import scala.sys.process._
 
 object primes {
   def main(args: Array[String]): Unit = {
-    val logger = Logger.getLogger("P2IRC-filter-benchmark")
+    val logger = Logger.getLogger("Prime-Finder")
     if (args.length != 2) {
       println("Usage: [calc directory] [n]")
       sys.exit(1)
@@ -25,7 +25,6 @@ object primes {
     // Force lazy evaluation of the spark context if not already created
     val sc = Spark.sc
     val program = s"${dir.getPath}${Path.SEPARATOR}calc"
-    sc.addFile(program)
 
     val p = new File(dir.getPath + Path.SEPARATOR + "prime0.txt")
     val p2 = new File(dir.getPath + Path.SEPARATOR + "prime1.txt")
@@ -38,6 +37,7 @@ object primes {
     while(continue) {
       rand = BigInt(numBits, scala.util.Random)
       rand = rand.setBit(0) // 2^10000 - 2^10001
+      if (rand % 2 == 0) rand += 1
 
       var out = new FileWriter(p, false)
       out.write(rand.toString)
@@ -45,6 +45,7 @@ object primes {
 
       rand = BigInt(numBits, scala.util.Random)
       rand = rand.setBit(0) // 2^10000 - 2^10001
+      if (rand % 2 == 0) rand += 1
 
       out = new FileWriter(p2, false)
       out.write(rand.toString)
@@ -52,14 +53,15 @@ object primes {
 
       rand = BigInt(numBits, scala.util.Random)
       rand = rand.setBit(0) // 2^10000 - 2^10001
+      if (rand % 2 == 0) rand += 1
 
       out = new FileWriter(p3, false)
       out.write(rand.toString)
       out.close()
 
       val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(index => s"${dir.getPath}${Path.SEPARATOR}prime${index % 3}.txt"))
-      val result = nums.pipe(Seq(s".${Path.SEPARATOR}calc")).collect()
-      val isPrime = mutable.HashMap[String, Boolean]()
+      val result = nums.pipe(program).collect()
+      val isPrime = mutable.Map[String, Boolean]((p.getAbsolutePath, true), (p2.getAbsolutePath, true), (p3.getAbsolutePath, true))
       var i = 0
       while (isPrime.values.exists(bool => bool) && i < result.length) {
         if (result(i).split(' ').last.contains("0")) {
@@ -72,8 +74,9 @@ object primes {
         // Run 50 checks on any that passed
         possiblePrimes = mutable.ListBuffer[String]()
         isPrime.filter(tuple => tuple._2).foreach(tuple => {
-          val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(tuple._1))
-          val result = nums.pipe(Seq(s".${Path.SEPARATOR}calc")).collect()
+          List.tabulate(Spark.defaultParallelism)(_ => tuple._1).foreach(dat => logger.info(dat.toString))
+          val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(_ => tuple._1))
+          val result = nums.pipe(program).collect()
           var passed = true
           var ii = 0
           while (passed && ii < result.length) {

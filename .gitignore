@@ -5,3 +5,4 @@ calc
 project/target
 .env
 src/main/c/build
+prime*.txt

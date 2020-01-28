@@ -7,7 +7,7 @@ object Spark {
 
   val BLOCK_SIZE: Long = 128 * 1024 * 1024
 
-  val APP_NAME = "P2IRC"
+  val APP_NAME = "PRIMES"
   val MASTER = "local[*]"
   val DISABLE_SPARK_LOGS = true
   val ES_HOST = "localhost"
@@ -15,8 +15,6 @@ object Spark {
   private lazy val logger = java.util.logging.Logger.getLogger(APP_NAME)
 
   lazy val sc: SparkContext = {
-    System.setProperty("java.library.path", "lib/")
-
     logger
       .info(
         s"\n" +
