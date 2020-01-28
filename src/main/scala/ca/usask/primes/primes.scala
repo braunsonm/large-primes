@@ -20,7 +20,7 @@ object primes {
     }
 
     val dir = new URI(args(0))
-    val num = Math.pow(2, args(1).toDouble).toInt
+    val num = BigInt(2).pow(args(1).toInt)
 
     // Force lazy evaluation of the spark context if not already created
     val sc = Spark.sc
