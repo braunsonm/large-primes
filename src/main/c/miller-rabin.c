@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
 #include <errno.h>
+#include <time.h>
 
 // GNU Multiple Precision Arithmetic Library
 #include <gmp.h>
@@ -12,36 +14,34 @@
 // Fast alternative to modulo reduction
 // https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
 
-int readInput(char *buffer, int buffer_size) {
-    /* FGet input from the user */
-    memset(buffer, 0, buffer_size);
-    fgets(buffer, buffer_size, stdin);
-    buffer[strlen(buffer) - 1] = '\0'; // clip off newline char
-
-    return 0;
-}
-
 int main() {
-    FILE* file;
     mpz_t n; mpz_init(n);
+    mpz_t randmpz; mpz_init(randmpz);
+    mpz_t one; mpz_init(one);
     int is_prime;
-    char fileName[1024];
-
-    readInput(fileName, 1024);
+    srand(time(NULL));
+    // Not cryptographcially secure
+    unsigned long seed = rand();
+    gmp_randstate_t randstate;
 
     // printf("%s opened\n", fileName);
-    file = fopen(fileName, "r");
-    if (!file) {
-        printf("Failed to open 0\n");
-        perror("File Open");
-        return 1;
-    }
-
-    mpz_inp_str(n, file, 10);
+    mpz_set_ui(one, 1);
+    mpz_inp_str(n, NULL, 10);
     //gmp_printf("%Zd\n", n);
 
+    gmp_randinit_default(randstate);
+    gmp_randseed_ui(randstate, seed);
+    mpz_urandomm(randmpz, randstate, n);
+    mpz_add(randmpz, randmpz, n);
+    if (mpz_even_p(randmpz) != 0)
+        mpz_add(randmpz, randmpz, one);
+
     // 0=not prime, 1=probably prime
-    is_prime = mpz_probab_prime_p(n, 25);
-    printf("%s %d\n", fileName, is_prime);
+    is_prime = mpz_probab_prime_p(randmpz, 25);
+    if (is_prime == 2)
+        // For sure a prime
+        is_prime = 1;
+    
+    gmp_printf("%d %Zd\n", is_prime, randmpz);
     return 0;
 }
