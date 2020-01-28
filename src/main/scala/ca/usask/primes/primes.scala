@@ -23,6 +23,8 @@ object primes {
 
     // Force lazy evaluation of the spark context if not already created
     val sc = Spark.sc
+    val program = s"${dir.getPath}${Path.SEPARATOR}calc"
+    sc.addFile(program)
 
     val p = new File(dir.getPath + Path.SEPARATOR + "prime.txt")
     var rand = BigInt(numBits, scala.util.Random)
@@ -38,7 +40,7 @@ object primes {
       out.close()
 
       val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(_ => ""))
-      val result = nums.pipe(Seq(s"${dir.getPath}${Path.SEPARATOR}calc ${dir.getPath}${Path.SEPARATOR}prime.txt")).collect()
+      val result = nums.pipe(Seq(s".${Path.SEPARATOR}calc ${dir.getPath}${Path.SEPARATOR}prime.txt")).collect()
       var isPrime = true
       var i = 0
       while (isPrime || i < result.length) {
