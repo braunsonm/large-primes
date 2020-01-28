@@ -28,8 +28,8 @@ object primes {
     sc.addFile(program)
 
     val p = new File(dir.getPath + Path.SEPARATOR + "prime0.txt")
-    val p2 = new File(dir.getPath + Path.SEPARATOR + "prime2.txt")
-    val p3 = new File(dir.getPath + Path.SEPARATOR + "prime3.txt")
+    val p2 = new File(dir.getPath + Path.SEPARATOR + "prime1.txt")
+    val p3 = new File(dir.getPath + Path.SEPARATOR + "prime2.txt")
     var possiblePrimes = mutable.ListBuffer[String]()
     var rand = BigInt(numBits, scala.util.Random)
     val startTime = System.nanoTime()
