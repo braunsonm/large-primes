@@ -21,24 +21,26 @@ object primes {
 
     val dir = new URI(args(0))
     val numBits = args(1).toInt
+    val concurentPrimes = Spark.defaultParallelism
 
     // Force lazy evaluation of the spark context if not already created
     val sc = Spark.sc
     val program = s"${dir.getPath}${Path.SEPARATOR}calc"
     val primeFiles = mutable.ListBuffer[File]()
 
-    for (i <- 0 until 14) {
+    for (i <- 0 until concurentPrimes) {
       primeFiles.append(new File(dir.getPath + Path.SEPARATOR + s"prime${i.toString}.txt"))
     }
 
     var possiblePrimes = mutable.ListBuffer[String]()
     var rand = BigInt(numBits, scala.util.Random)
+    val random = scala.util.Random
     val startTime = System.nanoTime()
 
     var continue = true
     while(continue) {
       primeFiles.foreach(file => {
-        rand = BigInt(numBits, scala.util.Random)
+        rand = BigInt(numBits, random)
         rand = rand.setBit(0) // 2^10000 - 2^10001
         if (rand % 2 == 0) rand += 1
 
@@ -47,7 +49,7 @@ object primes {
         out.close()
       })
 
-      val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(index => s"${dir.getPath}${Path.SEPARATOR}prime${index % 14}.txt"))
+      val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(index => s"${dir.getPath}${Path.SEPARATOR}prime${index % concurentPrimes}.txt"))
       val result = nums.pipe(program).collect()
       val isPrime = mutable.Map[String, Boolean]()
       primeFiles.foreach(file => isPrime(file.getAbsolutePath) = true)
@@ -61,7 +63,7 @@ object primes {
 
       if (isPrime.values.exists(bool => bool)) {
         // Run 50 checks on any that passed
-        logger.info("Possible prime found: " + isPrime.filter(tuple => tuple._2).keys.mkString(" "))
+        logger.info("Possible prime(s) found: " + isPrime.filter(tuple => tuple._2).keys.mkString(" "))
         possiblePrimes = mutable.ListBuffer[String]()
         isPrime.filter(tuple => tuple._2).foreach(tuple => {
           val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(_ => tuple._1))
