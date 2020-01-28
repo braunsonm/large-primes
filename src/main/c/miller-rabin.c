@@ -2,6 +2,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
 
 // GNU Multiple Precision Arithmetic Library
 #include <gmp.h>
@@ -10,18 +11,29 @@
 // Fast alternative to modulo reduction
 // https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
 
-int main(int argc, char** argv) {
+int readInput(char *buffer, int buffer_size) {
+    /* FGet input from the user */
+    memset(buffer, 0, buffer_size);
+    fgets(buffer, buffer_size, stdin);
+    buffer[strlen(buffer) - 1] = '\0'; // clip off newline char
+
+    return 0;
+}
+
+int main() {
     FILE* file;
     mpz_t n; mpz_init(n);
     int is_prime;
+    char fileName[1024];
 
-    if (argc != 2) {
-        printf("Usage: [filename]\n");
-        return 1;
+    readInput(fileName, 1024);
+
+    //printf("Opening %s\n", fileName);
+    file = fopen(fileName, "r");
+    if (!file) {
+        printf("Failed to open 0\n");
+        return 0;
     }
-
-    //printf("Opening %s\n", argv[1]);
-    file = fopen(argv[1], "r");
 
     mpz_inp_str(n, file, 10);
     //gmp_printf("%Zd\n", n);

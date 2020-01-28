@@ -39,7 +39,7 @@ object primes {
       out.write(rand.toString)
       out.close()
 
-      val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(_ => ""))
+      val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(_ => s"${dir.getPath}${Path.SEPARATOR}prime.txt"))
       val result = nums.pipe(Seq(s".${Path.SEPARATOR}calc")).collect()
       var isPrime = true
       var i = 0
