@@ -1,11 +1,13 @@
 package ca.usask.primes
 
+import java.io.{File, FileWriter}
 import java.net.URI
 import java.nio.charset.StandardCharsets
 import java.util.logging.Logger
 
 import org.apache.hadoop
 import org.apache.hadoop.fs.Path
+
 import scala.sys.process._
 
 object primes {
@@ -22,13 +24,7 @@ object primes {
     // Force lazy evaluation of the spark context if not already created
     val sc = Spark.sc
 
-    def fs = {
-      val conf = new hadoop.conf.Configuration()
-      conf.set("fs.default.name", s"hdfs://${dir.getHost}:${dir.getPort}")
-      hadoop.fs.FileSystem.get(conf)
-    }
-
-    val p = new Path(dir.getPath + Path.SEPARATOR + "prime.txt")
+    val p = new File(dir.getPath + Path.SEPARATOR + "prime.txt")
     var rand = BigInt(numBits, scala.util.Random)
     val startTime = System.nanoTime()
 
@@ -37,18 +33,11 @@ object primes {
       rand = BigInt(numBits, scala.util.Random)
       rand = rand.setBit(0) // 2^10000 - 2^10001
 
-      val out = fs.create(p)
-      out.write(rand.toString.getBytes(StandardCharsets.US_ASCII))
+      val out = new FileWriter(p, false)
+      out.write(rand.toString)
       out.close()
 
       val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(_ => ""))
-      nums.map(_ => {
-        fs.copyToLocalFile(false, new Path(dir.getPath + Path.SEPARATOR + "prime.txt"),
-          new Path("file://" + Path.SEPARATOR + "tmp" + hadoop.fs.Path.SEPARATOR + "prime.txt"), true)
-        fs.copyToLocalFile(false, new Path(dir.getPath + Path.SEPARATOR + "calc"),
-          new Path("file://" + Path.SEPARATOR + "tmp" + Path.SEPARATOR + "calc"), true)
-      }).count()
-
       val result = nums.pipe(Seq("/tmp/calc /tmp/prime.txt")).collect()
       var isPrime = true
       var i = 0
