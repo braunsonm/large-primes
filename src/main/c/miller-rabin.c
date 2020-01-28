@@ -32,7 +32,7 @@ int main() {
     file = fopen(fileName, "r");
     if (!file) {
         printf("Failed to open 0\n");
-        return 0;
+        return 1;
     }
 
     mpz_inp_str(n, file, 10);
@@ -41,5 +41,5 @@ int main() {
     // 0=not prime, 1=probably prime
     is_prime = mpz_millerrabin(n, 1);
     printf("%d\n", is_prime);
-    return is_prime;
+    return 0;
 }
