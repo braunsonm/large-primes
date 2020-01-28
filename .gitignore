@@ -3,3 +3,4 @@ calc
 .idea
 .vscode
 project/target
+.env
