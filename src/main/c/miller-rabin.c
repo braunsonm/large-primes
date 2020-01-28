@@ -41,7 +41,7 @@ int main() {
     //gmp_printf("%Zd\n", n);
 
     // 0=not prime, 1=probably prime
-    is_prime = mpz_millerrabin(n, 25);
+    is_prime = mpz_probab_prime_p(n, 25);
     printf("%s %d\n", fileName, is_prime);
     return 0;
 }
