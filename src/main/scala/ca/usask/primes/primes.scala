@@ -50,7 +50,7 @@ object primes {
       val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(index => s"${dir.getPath}${Path.SEPARATOR}prime${index % 14}.txt"))
       val result = nums.pipe(program).collect()
       val isPrime = mutable.Map[String, Boolean]()
-      primeFiles.foreach(_ => isPrime(_) = true)
+      primeFiles.foreach(file => isPrime(file.getAbsolutePath) = true)
       var i = 0
       while (isPrime.values.exists(bool => bool) && i < result.length) {
         if (result(i).split(' ').last.contains("0")) {
