@@ -38,7 +38,7 @@ object primes {
       out.close()
 
       val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(_ => ""))
-      val result = nums.pipe(Seq("/tmp/calc /tmp/prime.txt")).collect()
+      val result = nums.pipe(Seq(s"${dir.getPath}${Path.SEPARATOR}calc ${dir.getPath}${Path.SEPARATOR}prime.txt")).collect()
       var isPrime = true
       var i = 0
       while (isPrime || i < result.length) {
