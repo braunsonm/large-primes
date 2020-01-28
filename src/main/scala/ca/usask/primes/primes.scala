@@ -25,43 +25,32 @@ object primes {
     // Force lazy evaluation of the spark context if not already created
     val sc = Spark.sc
     val program = s"${dir.getPath}${Path.SEPARATOR}calc"
+    val primeFiles = mutable.ListBuffer[File]()
 
-    val p = new File(dir.getPath + Path.SEPARATOR + "prime0.txt")
-    val p2 = new File(dir.getPath + Path.SEPARATOR + "prime1.txt")
-    val p3 = new File(dir.getPath + Path.SEPARATOR + "prime2.txt")
+    for (i <- 0 until 14) {
+      primeFiles.append(new File(dir.getPath + Path.SEPARATOR + s"prime${i.toString}.txt"))
+    }
+
     var possiblePrimes = mutable.ListBuffer[String]()
     var rand = BigInt(numBits, scala.util.Random)
     val startTime = System.nanoTime()
 
     var continue = true
     while(continue) {
-      rand = BigInt(numBits, scala.util.Random)
-      rand = rand.setBit(0) // 2^10000 - 2^10001
-      if (rand % 2 == 0) rand += 1
+      primeFiles.foreach(file => {
+        rand = BigInt(numBits, scala.util.Random)
+        rand = rand.setBit(0) // 2^10000 - 2^10001
+        if (rand % 2 == 0) rand += 1
 
-      var out = new FileWriter(p, false)
-      out.write(rand.toString)
-      out.close()
+        val out = new FileWriter(file, false)
+        out.write(rand.toString)
+        out.close()
+      })
 
-      rand = BigInt(numBits, scala.util.Random)
-      rand = rand.setBit(0) // 2^10000 - 2^10001
-      if (rand % 2 == 0) rand += 1
-
-      out = new FileWriter(p2, false)
-      out.write(rand.toString)
-      out.close()
-
-      rand = BigInt(numBits, scala.util.Random)
-      rand = rand.setBit(0) // 2^10000 - 2^10001
-      if (rand % 2 == 0) rand += 1
-
-      out = new FileWriter(p3, false)
-      out.write(rand.toString)
-      out.close()
-
-      val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(index => s"${dir.getPath}${Path.SEPARATOR}prime${index % 3}.txt"))
+      val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(index => s"${dir.getPath}${Path.SEPARATOR}prime${index % 14}.txt"))
       val result = nums.pipe(program).collect()
-      val isPrime = mutable.Map[String, Boolean]((p.getAbsolutePath, true), (p2.getAbsolutePath, true), (p3.getAbsolutePath, true))
+      val isPrime = mutable.Map[String, Boolean]()
+      primeFiles.foreach(_ => isPrime(_) = true)
       var i = 0
       while (isPrime.values.exists(bool => bool) && i < result.length) {
         if (result(i).split(' ').last.contains("0")) {
