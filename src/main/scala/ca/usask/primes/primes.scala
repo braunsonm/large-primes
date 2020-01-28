@@ -74,7 +74,6 @@ object primes {
         // Run 50 checks on any that passed
         possiblePrimes = mutable.ListBuffer[String]()
         isPrime.filter(tuple => tuple._2).foreach(tuple => {
-          List.tabulate(Spark.defaultParallelism)(_ => tuple._1).foreach(dat => logger.info(dat.toString))
           val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(_ => tuple._1))
           val result = nums.pipe(program).collect()
           var passed = true
