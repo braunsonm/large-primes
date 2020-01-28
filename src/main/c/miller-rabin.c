@@ -77,6 +77,9 @@ int main() {
         iter++;
     }
     
-    gmp_printf("%d %Zd\n", is_prime, randmpz);
+    if (is_prime == 1)
+        gmp_printf("%d %Zd\n", is_prime, randmpz);
+    else
+        gmp_printf("%d 1\n", is_prime); // Don't waste bandwidth
     return 0;
 }
