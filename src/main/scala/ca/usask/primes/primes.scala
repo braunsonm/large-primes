@@ -44,9 +44,9 @@ object primes {
       val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(_ => ""))
       nums.map(_ => {
         fs.copyToLocalFile(false, new Path(dir.getPath + Path.SEPARATOR + "prime.txt"),
-          new Path(Path.SEPARATOR + "tmp" + hadoop.fs.Path.SEPARATOR + "prime.txt"), true)
+          new Path("file://" + Path.SEPARATOR + "tmp" + hadoop.fs.Path.SEPARATOR + "prime.txt"), true)
         fs.copyToLocalFile(false, new Path(dir.getPath + Path.SEPARATOR + "calc"),
-          new Path(Path.SEPARATOR + "tmp" + Path.SEPARATOR + "calc"), true)
+          new Path("file://" + Path.SEPARATOR + "tmp" + Path.SEPARATOR + "calc"), true)
       }).count()
 
       val result = nums.pipe(Seq("/tmp/calc /tmp/prime.txt")).collect()
