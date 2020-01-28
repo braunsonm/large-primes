@@ -73,6 +73,8 @@ int main() {
         if (is_prime == 2)
             // For sure a prime
             is_prime = 1;
+
+        iter++;
     }
     
     gmp_printf("%d %Zd\n", is_prime, randmpz);
