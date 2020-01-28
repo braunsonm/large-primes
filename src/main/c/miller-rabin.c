@@ -51,7 +51,7 @@ int main() {
     mpz_t n; mpz_init(n);
     mpz_t randmpz; mpz_init(randmpz);
     mpz_t one; mpz_init(one);
-    int is_prime;
+    int is_prime, iter = 0;
     randomize();
     unsigned long seed = rand();
     gmp_randstate_t randstate;
@@ -63,16 +63,19 @@ int main() {
 
     gmp_randinit_default(randstate);
     gmp_randseed_ui(randstate, seed);
-    mpz_urandomm(randmpz, randstate, n);
-    mpz_add(randmpz, randmpz, n);
-    if (mpz_even_p(randmpz) != 0)
-        mpz_add(randmpz, randmpz, one);
 
-    // 0=not prime, 1=probably prime
-    is_prime = mpz_probab_prime_p(randmpz, 25);
-    if (is_prime == 2)
-        // For sure a prime
-        is_prime = 1;
+    while(iter < 10 || is_prime != 1) {
+        mpz_urandomm(randmpz, randstate, n);
+        mpz_add(randmpz, randmpz, n);
+        if (mpz_even_p(randmpz) != 0)
+            mpz_add(randmpz, randmpz, one);
+
+        // 0=not prime, 1=probably prime
+        is_prime = mpz_probab_prime_p(randmpz, 50);
+        if (is_prime == 2)
+            // For sure a prime
+            is_prime = 1;
+    }
     
     gmp_printf("%d %Zd\n", is_prime, randmpz);
     return 0;
