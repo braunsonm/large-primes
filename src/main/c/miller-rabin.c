@@ -14,9 +14,7 @@
 // Fast alternative to modulo reduction
 // https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
 
-#include <stdlib.h>
-#include <stdio.h>
-
+// https://stackoverflow.com/questions/50285210/generating-random-values-without-time-h
 static int randomize_helper(FILE *in)
 {
     unsigned int  seed;
@@ -64,7 +62,7 @@ int main() {
     gmp_randinit_default(randstate);
     gmp_randseed_ui(randstate, seed);
 
-    while(iter < 10 || is_prime != 1) {
+    while(iter < 20 && is_prime != 1) {
         mpz_urandomm(randmpz, randstate, n);
         mpz_add(randmpz, randmpz, n);
         if (mpz_even_p(randmpz) != 0)
