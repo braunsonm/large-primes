@@ -47,8 +47,8 @@ object primes {
 
     val endTime = System.nanoTime()
 
-    logger.info(s"Prime prob complete. Time elapsed = ${(endTime - startTime) / 1e9}s")
     possiblePrimes.toSet[String].foreach(logger.info)
+    logger.info(s"Prime prob complete. Time elapsed = ${(endTime - startTime) / 1e9}s")
 
     val out = new FileWriter(new File(s"${dir.getPath}${Path.SEPARATOR}primes.txt"), false)
     out.write(possiblePrimes.toSet[String].mkString("\n\n"))
