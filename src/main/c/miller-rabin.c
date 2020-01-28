@@ -49,9 +49,10 @@ int main() {
     mpz_t n; mpz_init(n);
     mpz_t randmpz; mpz_init(randmpz);
     mpz_t one; mpz_init(one);
-    int is_prime, iter = 0;
+    int is_prime = 0;
     randomize();
     unsigned long seed = rand();
+    unsigned long startTime = time(NULL);
     gmp_randstate_t randstate;
 
     // printf("%s opened\n", fileName);
@@ -62,7 +63,8 @@ int main() {
     gmp_randinit_default(randstate);
     gmp_randseed_ui(randstate, seed);
 
-    while(iter < 50 && is_prime != 1) {
+    // Run for an hour or until a prime is found
+    while(time(NULL) - startTime <= 3600 && is_prime != 1) {
         mpz_urandomm(randmpz, randstate, n);
         mpz_add(randmpz, randmpz, n);
         if (mpz_even_p(randmpz) != 0)
@@ -73,8 +75,6 @@ int main() {
         if (is_prime == 2)
             // For sure a prime
             is_prime = 1;
-
-        iter++;
     }
     
     if (is_prime == 1)
