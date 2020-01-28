@@ -62,7 +62,7 @@ int main() {
     gmp_randinit_default(randstate);
     gmp_randseed_ui(randstate, seed);
 
-    while(iter < 20 && is_prime != 1) {
+    while(iter < 10 && is_prime != 1) {
         mpz_urandomm(randmpz, randstate, n);
         mpz_add(randmpz, randmpz, n);
         if (mpz_even_p(randmpz) != 0)
