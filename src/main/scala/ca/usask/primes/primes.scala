@@ -27,7 +27,7 @@ object primes {
     val program = s"${dir.getPath}${Path.SEPARATOR}calc"
     sc.addFile(program)
 
-    val p = new File(dir.getPath + Path.SEPARATOR + "prime.txt")
+    val p = new File(dir.getPath + Path.SEPARATOR + "prime0.txt")
     val p2 = new File(dir.getPath + Path.SEPARATOR + "prime2.txt")
     val p3 = new File(dir.getPath + Path.SEPARATOR + "prime3.txt")
     var possiblePrimes = mutable.ListBuffer[String]()
