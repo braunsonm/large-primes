@@ -69,9 +69,9 @@ PARTA_SERVER_OBJ = $(patsubst %,$(OBJECTFILES)/%,$(_PARTA_SERVER_OBJ))
 $(OBJECTFILES)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-calc: calc
+calc: calc-exec
 
-calc: $(PARTA_SERVER_OBJ)
+calc-exec: $(PARTA_SERVER_OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 	cp $@ ${BINFILES}/$@
 
