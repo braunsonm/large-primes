@@ -72,6 +72,7 @@ object primes {
 
       if (isPrime.values.exists(bool => bool)) {
         // Run 50 checks on any that passed
+        logger.info("Possible prime found: " + isPrime.filter(tuple => tuple._2).keys.mkString(" "))
         possiblePrimes = mutable.ListBuffer[String]()
         isPrime.filter(tuple => tuple._2).foreach(tuple => {
           val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(_ => tuple._1))
