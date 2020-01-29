@@ -71,7 +71,7 @@ int main() {
             mpz_add(randmpz, randmpz, one);
 
         // 0=not prime, 1=probably prime
-        is_prime = mpz_probab_prime_p(randmpz, 50);
+        is_prime = mpz_probab_prime_p(randmpz, 25);
         if (is_prime == 2)
             // For sure a prime
             is_prime = 1;
@@ -80,6 +80,6 @@ int main() {
     if (is_prime == 1)
         gmp_printf("%d %Zd\n", is_prime, randmpz);
     else
-        gmp_printf("%d 1\n", is_prime); // Don't waste bandwidth
+        gmp_printf("%d 0\n", is_prime); // Don't waste bandwidth
     return 0;
 }
