@@ -63,15 +63,22 @@ directories:
 
 # TAB IS FOR RECIPES ONLY
 # SPACES IS FOR ANYTHING ELSE
-_PARTA_SERVER_OBJ = miller-rabin.o
-PARTA_SERVER_OBJ = $(patsubst %,$(OBJECTFILES)/%,$(_PARTA_SERVER_OBJ))
+_MILLER = miller-rabin.o
+MILLER = $(patsubst %,$(OBJECTFILES)/%,$(_MILLER))
+_VERIFY = verify-prime.o
+VERIFY = $(patsubst %,$(OBJECTFILES)/%,$(_VERIFY))
 
 $(OBJECTFILES)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 calc-target: calc
+verify-target: verify
 
-calc: $(PARTA_SERVER_OBJ)
+calc: $(MILLER)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+	cp $@ ${BINFILES}/$@
+
+verify: $(VERIFY)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 	cp $@ ${BINFILES}/$@
 
@@ -79,3 +86,4 @@ calc: $(PARTA_SERVER_OBJ)
 clean:
 	rm -rf build/ core.*
 	rm -f calc
+	rm -rf verify
