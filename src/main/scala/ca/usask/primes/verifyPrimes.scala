@@ -17,20 +17,15 @@ object verifyPrimes {
     }
 
     val dir = new URI(args(0))
-    val concurentPrimes = Spark.defaultParallelism
 
     // Force lazy evaluation of the spark context if not already created
     val sc = Spark.sc
     val program = s"${dir.getPath}${Path.SEPARATOR}verify"
     val primeFiles = mutable.ListBuffer[File]()
 
-    for (i <- 0 until concurentPrimes) {
-      primeFiles.append(new File(dir.getPath + Path.SEPARATOR + s"primefound.txt"))
-    }
-
     val startTime = System.nanoTime()
     var bad = false
-    val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(index => s"${dir.getPath}${Path.SEPARATOR}primefound.txt"))
+    val nums = sc.parallelize(List.tabulate(Spark.defaultParallelism)(_ => s"${dir.getPath}${Path.SEPARATOR}primefound.txt"))
     val result = nums.pipe(program).collect()
     val isPrime = mutable.Map[String, Boolean]()
     primeFiles.foreach(file => isPrime(file.getAbsolutePath) = true)
