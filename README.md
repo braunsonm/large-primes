@@ -2,6 +2,10 @@
 
 This is a simple Spark application that uses the [GNU Multiple Precision Library (GMP)](https://gmplib.org/) to find and verify large primes.
 
+Two results came from this, a 2^1million prime being the largest. See the files in the root project directory,
+- prime2-1million.txt
+- prime2-100thousand.txt
+
 This was done as a fun contest in my Cryptography class. Sorry for the messy code,
 most of this was done in one night to see how far I could get.
 
@@ -22,7 +26,9 @@ options relevant to your setup.
 ### Finding a Prime
 
 The `primes` Spark application will search for primes between N and 2N defined by
-the environment variable `NUM_BITS`. 
+the environment variable `NUM_BITS`. This Spark application calls a C program on
+each node so that we can operate at better efficiency using the GMP library for extremely
+large numbers.
 
 The algorithm is as follows:
 
@@ -80,7 +86,8 @@ Some future improvements that could be completed include,
 Miller-Rabin since the number already passed Ballie-PSW.
 - We can use a Sieve similar to the "nextprime" function does in GMP. Then, each
 executor core could be given a range of the sieve to run through looking for primes.
-This would give us better than "random" selection of numbers.
+This would give us better than "random" selection of numbers. Take a look at the branch
+`feature/nextprimesieve` for some starter work on that.
 - Caching of the a^k values of Miller-Rabin if we use the same a values for each core
 running Miller-Rabin would greatly speed up that computation (dynamic programming approach may also be investigated with Ballie-PSW)
  
