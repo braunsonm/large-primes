@@ -1,6 +1,6 @@
-# Large Primes on Spark
+# Large Probable Primes on Spark
 
-This is a simple Spark application that uses the [GNU Multiple Precision Library (GMP)](https://gmplib.org/) to find and verify large primes.
+This is a simple Spark application that uses the [GNU Multiple Precision Library (GMP)](https://gmplib.org/) to find and probabilisitically verify large primes.
 
 Two results came from this, a 2^1million prime being the largest. See the files in the root project directory,
 - prime2-1million.txt
