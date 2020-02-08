@@ -67,12 +67,15 @@ _MILLER = miller-rabin.o
 MILLER = $(patsubst %,$(OBJECTFILES)/%,$(_MILLER))
 _VERIFY = verify-prime.o
 VERIFY = $(patsubst %,$(OBJECTFILES)/%,$(_VERIFY))
+_NEXTPRIME = nextprime.o
+NEXTPRIME = $(patsubst %,$(OBJECTFILES)/%,$(_NEXTPRIME))
+
 
 $(OBJECTFILES)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-calc-target: calc
-verify-target: verify
+calc-target: calc verify nextprime
+
 
 calc: $(MILLER)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
@@ -82,8 +85,13 @@ verify: $(VERIFY)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 	cp $@ ${BINFILES}/$@
 
+nextprime: $(NEXTPRIME)
+    $(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+    cp $@ ${BINFILES}/$@
+
 # Helpers
 clean:
 	rm -rf build/ core.*
 	rm -f calc
-	rm -rf verify
+	rm -f verify
+	rm -f nextprime
