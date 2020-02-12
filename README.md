@@ -46,9 +46,7 @@ random numbers (between N and 2N) and calling GMP's probable prime function.
     than it is to calculate the Ballie-PSW. This way we can try as many numbers as
     possible before wasting time on Miller-Rabin.
     - We check to ensure our number is odd before beginning our call to GMP
-- Spark collects all the standard output from each application after they close (as
-long as it's a zero exit code) and checks for any executors that report a 
-probable prime. If one is found, end the application
+- Spark collects all the standard output from each application after they close (as long as it's a zero exit code) and checks for any executors that report a probable prime. If one is found, we write out the time taken and write the prime value to our share with the final `primes.txt`, each found prime (if multiple) is separated by a newline character.
 - Otherwise we repeat. Creating a new Spark stage.
 
 Run the automated script:
